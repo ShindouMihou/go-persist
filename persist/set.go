@@ -42,6 +42,10 @@ func (pset *Set[Value]) Persist(every time.Duration) {
 	pset.backing.Persist(every)
 }
 
+func (pset *Set[Value]) Watch() (close func() error, err error) {
+	return pset.backing.Watch()
+}
+
 func (pset *Set[Value]) Save() error {
 	return pset.backing.Save()
 }

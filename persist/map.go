@@ -48,6 +48,10 @@ func (pmap *Map[Key, Value]) Persist(every time.Duration) {
 	pmap.backing.Persist(every)
 }
 
+func (pmap *Map[Key, Value]) Watch() (close func() error, err error) {
+	return pmap.backing.Watch()
+}
+
 func (pmap *Map[Key, Value]) Save() error {
 	return pmap.backing.Save()
 }

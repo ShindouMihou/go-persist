@@ -74,6 +74,10 @@ func (parr *Array[Value]) Persist(every time.Duration) {
 	parr.backing.Persist(every)
 }
 
+func (parr *Array[Value]) Watch() (close func() error, err error) {
+	return parr.backing.Watch()
+}
+
 func (parr *Array[Value]) Save() error {
 	return parr.backing.Save()
 }

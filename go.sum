@@ -1,6 +1,10 @@
-github.com/ShindouMihou/go-little-utils v0.0.1 h1:q98kHbmtmgVq9kxFWyAmboLjV+u5tgyLSov7CLCMq/w=
-github.com/ShindouMihou/go-little-utils v0.0.1/go.mod h1:vrRvF4+nmJuiigqYKpaJFdLfkvNG++9PwNSQv2ClaRQ=
+github.com/ShindouMihou/chikador v1.0.1 h1:j89tK7X3uvVi1o2FzFz7GCgqtiMHsI2l4NHInPuN1Ss=
+github.com/ShindouMihou/chikador v1.0.1/go.mod h1:Fyc90qCDb9m69/9pW5kYi/Y9hbNeErOcgb73VPOWC/E=
 github.com/ShindouMihou/go-little-utils v0.0.2 h1:wz1+9oaOGzo9ypGwIeb1f7Tzi/n2Lypn0d2IF5yPpIw=
 github.com/ShindouMihou/go-little-utils v0.0.2/go.mod h1:vrRvF4+nmJuiigqYKpaJFdLfkvNG++9PwNSQv2ClaRQ=
 github.com/deckarep/golang-set/v2 v2.3.1 h1:vjmkvJt/IV27WXPyYQpAh4bRyWJc5Y435D17XQ9QU5A=
 github.com/deckarep/golang-set/v2 v2.3.1/go.mod h1:VAky9rY/yGXJOLEDv3OMci+7wtDpOF4IN+y82NBOac4=
+github.com/fsnotify/fsnotify v1.6.0 h1:n+5WquG0fcWoWp6xPWfHdbskMCQaFnG6PfBrh1Ky4HY=
+github.com/fsnotify/fsnotify v1.6.0/go.mod h1:sl3t1tCWJFWoRz9R8WJCbQihKKwmorjAbSClcnxKAGw=
+golang.org/x/sys v0.0.0-20220908164124-27713097b956 h1:XeJjHH1KiLpKGb6lvMiksZ9l0fVUh+AmGcm0nOMEBOY=
+golang.org/x/sys v0.0.0-20220908164124-27713097b956/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=

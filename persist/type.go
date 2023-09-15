@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/ShindouMihou/chikador/chikador"
 	"github.com/ShindouMihou/go-little-utils/fileutils"
 	"github.com/ShindouMihou/go-little-utils/locks"
+	"github.com/fsnotify/fsnotify"
 	"io"
 	"os"
 	"sync"
@@ -17,6 +19,8 @@ type Persisted[T any] struct {
 	value           *T
 	hasBeenModified bool
 	mutex           sync.RWMutex
+	chismis         *chikador.Chismis
+	filechanged     bool
 }
 
 func NewPersisted[T any](path string, initial *T) *Persisted[T] {
@@ -90,16 +94,51 @@ func (persisted *Persisted[T]) Persist(every time.Duration) {
 	go persisted.persist(every)
 }
 
+func (persisted *Persisted[T]) Watch() (close func() error, err error) {
+	if persisted.chismis != nil {
+		return nil, errors.New("already watching for changes in the file")
+	}
+	if err := persisted.Save(); err != nil {
+		return nil, err
+	}
+	chismis, err := chikador.Watch(persisted.file, chikador.WithDedupe)
+	if err != nil {
+		return nil, err
+	}
+	persisted.chismis = chismis
+	persisted.chismis.Listen(func(msg *chikador.Message) {
+		if !msg.Event.Has(fsnotify.Write) {
+			return
+		}
+		// only change when it's not a change coming from us
+		if persisted.filechanged {
+			persisted.filechanged = false
+			return
+		}
+		if err := persisted.Load(); err != nil {
+			fmt.Println("err(go-persist): failed to reload from ", persisted.file, ":", err)
+		}
+		fmt.Println("reloaded with value: ", *persisted.value)
+	})
+	return func() error {
+		err := persisted.chismis.Close()
+		persisted.chismis = nil
+		return err
+	}, nil
+}
+
 func (persisted *Persisted[T]) persist(every time.Duration) {
 	time.Sleep(every)
 
 	persisted.mutex.RLock()
 	defer persisted.mutex.RUnlock()
-	defer persisted.Persist(every)
+	defer persisted.persist(every)
 
 	if !persisted.hasBeenModified {
 		return
 	}
+
+	persisted.filechanged = true
 
 	if err := persisted.Save(); err != nil {
 		fmt.Println("failed to save persistent data: ", err)

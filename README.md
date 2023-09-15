@@ -4,6 +4,16 @@ a little persistence utility for golang applications when all you need is just s
 entire database. go-persist is that exactly with opt-able conveniences such as auto-persist, array persistence and 
 even map persistence.
 
+## Features
+- [x] Auto-persist every 5 seconds as long as there was a change via `Persist(every)`
+- [x] Autoload new file changes, excluding ones from go-persist methods, using [`chikador`](https://github.com/ShindouMihou/chikador) via `Watch()`
+- [x] Supports arrays, sets via [deckarep/golang-set](https://github.com/deckarep/golang-set), maps and any type that can be done with JSON!
+
+## Installation
+```go
+go get github.com/ShindouMihou/go-persist
+```
+
 ## Demo
 
 ### Array Persistence
@@ -15,6 +25,15 @@ func main() {
 		log.Panicln("failed to load array", err)
     	}
 	array.Append("hello", "world")
+
+    // When we want to enable automatic file reloads when the file has changed (any changes, excluding
+    // the ones that came from persist itself). Note that this will cause an initial `Save()` to ensure that
+    // we have a file that we can watch.
+    closeWatcher, err := array.Watch()
+    if err != nil {
+        log.Panicln("failed to start file watcher for array", err)
+    }
+    defer closeWatcher()
 	
 	// We recommend turning on auto-persistence after loading the already-persisted data
 	// because we may end up overwriting the data, although highly unlikely as the internal backing 
@@ -44,6 +63,16 @@ func main() {
 	if set.Contains("world") {
 	    set.Append("and", "galaxy")	
     	}
+    }
+
+    // When we want to enable automatic file reloads when the file has changed (any changes, excluding
+    // the ones that came from persist itself). Note that this will cause an initial `Save()` to ensure that
+    // we have a file that we can watch.
+    closeWatcher, err := array.Watch()
+    if err != nil {
+        log.Panicln("failed to start file watcher for array", err)
+    }
+    defer closeWatcher()
 	
 	// We recommend turning on auto-persistence after loading the already-persisted data
 	// because we may end up overwriting the data, although highly unlikely as the internal backing 
@@ -66,6 +95,17 @@ func main() {
 		log.Panicln("failed to save map", err)
     	}
     	pmap.Set("hello", "world")
+    }
+    pmap.Set("hello", "world")
+
+    // When we want to enable automatic file reloads when the file has changed (any changes, excluding
+    // the ones that came from persist itself). Note that this will cause an initial `Save()` to ensure that
+    // we have a file that we can watch.
+    closeWatcher, err := array.Watch()
+    if err != nil {
+        log.Panicln("failed to start file watcher for array", err)
+    }
+    defer closeWatcher()
 	
 	// We recommend turning on auto-persistence after loading the already-persisted data
 	// because we may end up overwriting the data, although highly unlikely as the internal backing 
@@ -98,6 +138,16 @@ func main() {
 	ptype.Edit(func (value *Hello) {
 	    value.World = "galaxy"	
     	})
+    })
+
+    // When we want to enable automatic file reloads when the file has changed (any changes, excluding
+    // the ones that came from persist itself). Note that this will cause an initial `Save()` to ensure that
+    // we have a file that we can watch.
+    closeWatcher, err := array.Watch()
+    if err != nil {
+        log.Panicln("failed to start file watcher for array", err)
+    }
+    defer closeWatcher()
 	
 	// We recommend turning on auto-persistence after loading the already-persisted data
 	// because we may end up overwriting the data, although highly unlikely as the internal backing 
